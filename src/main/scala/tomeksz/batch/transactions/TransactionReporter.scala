@@ -13,14 +13,17 @@ class TransactionReporter extends Serializable {
 
     val userSummaries = transactionLines
       .map(parseTransactions)
-      .map(trx => (trx.userId, trx))
-      .groupByKey()
-      .mapValues(_.map(_.creditAmount).sum)
+      .mapPartitions(transactions => transactions.toSeq.groupBy(_.userId).mapValues(sumCredits).iterator)
+      .reduceByKey(_ + _ )
       .join(usersRdd)
       .mapValues { case (creditNet, user) => UserSummaryItem(user.fullName, creditNet) }
       .values
       .collect().toSeq
     TransactionSummary(userSummaries)
+  }
+
+  private def sumCredits(transactions: Seq[Transaction]): BigDecimal = {
+    transactions.map(_.creditAmount).sum
   }
 
   private def parseTransactions(line: String): Transaction = {
