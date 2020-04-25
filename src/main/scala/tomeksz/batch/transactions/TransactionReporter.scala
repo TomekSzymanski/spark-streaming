@@ -5,25 +5,26 @@ import java.time.LocalDateTime
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 
-class TransactionReporter extends Serializable {
+class TransactionReporter {
 
   def buildReport(transactionLines: RDD[String], users: Broadcast[Map[Long, User]]): TransactionSummary = {
 
     val userSummaries = transactionLines
-      .map(parseTransactions)
-      .mapPartitions(transactions => transactions.toSeq.groupBy(_.userId).mapValues(sumCredits).iterator)
+      .map(TransactionReporter.parseTransactions)
+      .mapPartitions(transactions => transactions.toSeq.groupBy(_.userId).mapValues(TransactionReporter.sumCredits).iterator)
       .reduceByKey(_ + _ )
       .map { case (userId, creditNet) => UserSummaryItem(users.value(userId).fullName, creditNet)}
       .collect().toSeq
     TransactionSummary(userSummaries)
   }
+}
 
-  private def sumCredits(transactions: Seq[Transaction]): BigDecimal = {
-    transactions.map(_.creditAmount).sum
-  }
+object TransactionReporter {
+
+  val LINE_SEPARATOR: String = ","
 
   private def parseTransactions(line: String): Transaction = {
-    val items = line.split(TransactionReporter.lineSeparator)
+    val items = line.split(TransactionReporter.LINE_SEPARATOR)
     require(items.size == 6, "input line does not contain required number of elements. Problem line: " + line)
     Transaction(
       userId = items(0).toLong,
@@ -35,9 +36,7 @@ class TransactionReporter extends Serializable {
     )
   }
 
-
-}
-
-object TransactionReporter {
-  val lineSeparator: String = ","
+  private def sumCredits(transactions: Seq[Transaction]): BigDecimal = {
+    transactions.map(_.creditAmount).sum
+  }
 }
