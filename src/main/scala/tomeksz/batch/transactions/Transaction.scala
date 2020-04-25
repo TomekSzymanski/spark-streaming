@@ -8,5 +8,10 @@ case class Transaction(userId: Long,
                        otherPartyId: Long,
                        transactionType: TransactionType,
                        description: String) {
-
+  def this(userId: Long,
+           dateTime: LocalDateTime,
+           creditAmount: BigDecimal,
+           otherPartyId: Long) = {
+    this(userId, dateTime, creditAmount, otherPartyId, MoneyPayment, "")
+  }
 }
