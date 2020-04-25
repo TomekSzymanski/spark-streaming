@@ -13,7 +13,8 @@ class TransactionReporter extends Serializable {
 
     val userSummaries = transactionLines
       .map(parseTransactions)
-      .groupBy(_.userId)
+      .map(trx => (trx.userId, trx))
+      .groupByKey()
       .mapValues(_.map(_.creditAmount).sum)
       .join(usersRdd)
       .mapValues { case (creditNet, user) => UserSummaryItem(user.fullName, creditNet) }
