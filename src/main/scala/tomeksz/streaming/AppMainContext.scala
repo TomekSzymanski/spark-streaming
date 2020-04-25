@@ -1,4 +1,4 @@
-package streaming
+package tomeksz.streaming
 
 import com.typesafe.config.ConfigFactory
 import org.apache.spark.SparkConf

@@ -1,0 +1,5 @@
+userId,dateTime,creditAmount,otherPartyId,transactionType,description
+1,2020-10-10T20:00:00,-1000,2,M,pay for insurance
+1,2020-10-11T09:10:10,-100,120,M,shopping at Walmart
+2,2020-05-11T09:10:10,-200,432,M,shopping at grocery
+2,2020-02-11T09:10:10,10000,543,T,pay check

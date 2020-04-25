@@ -1,4 +1,4 @@
-package streaming
+package tomeksz.streaming
 
 import org.apache.spark.streaming.dstream.DStream
 

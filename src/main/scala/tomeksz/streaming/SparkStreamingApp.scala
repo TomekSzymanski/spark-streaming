@@ -1,4 +1,4 @@
-package streaming
+package tomeksz.streaming
 
 import AppMainContext._
 

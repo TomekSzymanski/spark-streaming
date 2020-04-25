@@ -5,5 +5,5 @@ spark-submit \
 	--files application.conf,log4j.properties \
 	--conf "spark.executor.extraJavaOptions=-XX:+UseParallelGC -Dlog4j.configuration=file:log4j.properties" \
 	--conf "spark.driver.extraJavaOptions=-Dlog4j.configuration=file:log4j.properties" \
-	--class streaming.SparkStreamingApp \
+	--class tomeksz.streaming.SparkStreamingApp \
 	./spark-streaming-assembly-1.0-SNAPSHOT.jar

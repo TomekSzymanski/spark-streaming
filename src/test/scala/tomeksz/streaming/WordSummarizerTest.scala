@@ -1,4 +1,6 @@
-package streaming
+package tomeksz.streaming
+
+import tomeksz.IntegrationSpec
 
 class WordSummarizerTest extends IntegrationSpec {
 
