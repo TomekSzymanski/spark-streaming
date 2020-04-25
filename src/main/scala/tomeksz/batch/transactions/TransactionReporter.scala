@@ -2,22 +2,18 @@ package tomeksz.batch.transactions
 
 import java.time.LocalDateTime
 
+import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 
 class TransactionReporter extends Serializable {
 
-  def buildReport(transactionLines: RDD[String], userLines: RDD[String]): TransactionSummary = {
-    val usersRdd = userLines
-      .map(parseUsers)
-      .map(u => (u.userId, u))
+  def buildReport(transactionLines: RDD[String], users: Broadcast[Map[Long, User]]): TransactionSummary = {
 
     val userSummaries = transactionLines
       .map(parseTransactions)
       .mapPartitions(transactions => transactions.toSeq.groupBy(_.userId).mapValues(sumCredits).iterator)
       .reduceByKey(_ + _ )
-      .join(usersRdd)
-      .mapValues { case (creditNet, user) => UserSummaryItem(user.fullName, creditNet) }
-      .values
+      .map { case (userId, creditNet) => UserSummaryItem(users.value(userId).fullName, creditNet)}
       .collect().toSeq
     TransactionSummary(userSummaries)
   }
@@ -39,10 +35,6 @@ class TransactionReporter extends Serializable {
     )
   }
 
-  private def parseUsers(line: String): User = {
-    val items = line.split(TransactionReporter.lineSeparator)
-    User(userId = items(0).toLong, fullName = items(1))
-  }
 
 }
 
