@@ -1,9 +1,9 @@
 package tomeksz.batch.transactions
 
-sealed abstract class TransactionType extends Serializable
+sealed abstract case class TransactionType(symbol: String) extends Serializable
 
-object MoneyPayment extends TransactionType
-object Transfer extends TransactionType
+object MoneyPayment extends TransactionType("M")
+object Transfer extends TransactionType("T")
 
 object TransactionType {
   def apply(symbol: String): TransactionType = symbol match {

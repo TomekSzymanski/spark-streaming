@@ -25,6 +25,7 @@ wartremoverErrors ++= Seq(Wart.Product, Wart.Return, Wart.TryPartial, Wart.Enume
 libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-core" % sparkVersion % "provided",
   "org.apache.spark" %% "spark-sql" % sparkVersion % "provided",
+  "org.apache.spark" %% "spark-avro" % sparkVersion % "provided",
   "org.apache.spark" %% "spark-streaming" % sparkVersion % "provided",
   "org.apache.spark" %% "spark-streaming-kafka-0-10" % sparkVersion,
   "com.typesafe" % "config" % "1.4.0",
