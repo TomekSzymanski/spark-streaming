@@ -34,5 +34,12 @@ class WordSummarizerTest extends IntegrationSpec {
     testOperation[String, WordSummary](emptyInput, summarizer.summarize _, expectedOutput, ordered = true)
   }
 
+  it should "Maintain running aggregate summary across the windows - next windows empty" in {
+    Given("two windows, firs is non empty, the next one is empty")
+    val emptyInput = Seq(Seq("hello", "Spark"), Seq.empty)
+    val expectedOutput = Seq(Seq(WordSummary(2, Set("hello", "Spark"))), Seq(WordSummary(2, Set("hello", "Spark"))))
+    testOperation[String, WordSummary](emptyInput, summarizer.summarize _, expectedOutput, ordered = true)
+  }
+
 
 }

@@ -13,7 +13,7 @@ class WordSummarizer() extends Serializable {
   }
 
   private def updateWordSummary(nextWords: Seq[WordSummary], state: Option[WordSummary]): Option[WordSummary] = {
-    val updatedSummary = state.getOrElse(WordSummary.empty()) + nextWords.reduce(_ + _)
+    val updatedSummary = state.getOrElse(WordSummary.empty()) + nextWords.fold(WordSummary.empty())(_ + _)
     Some(updatedSummary)
   }
 }
