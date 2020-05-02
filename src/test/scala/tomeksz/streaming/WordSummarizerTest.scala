@@ -6,24 +6,33 @@ class WordSummarizerTest extends IntegrationSpec {
 
   val summarizer = new WordSummarizer()
 
-  ignore should "count total number of words for empty input" in {
-    Given("empty input")
+  it should "return empty RDD for no events" in {
+    Given("No records within first window")
     val emptyInput = Seq(Seq.empty[String])
-    val expectedOutput = Seq(Seq(WordSummary(0)))
+    val expectedOutput = Seq(Seq()) // empty RDD output from first window
     testOperation[String, WordSummary](emptyInput, summarizer.summarize _, expectedOutput, ordered = true)
   }
 
-  ignore should "count total number of words for single empty input line" in {
+  it should "Return empty summary for single event not containing any word" in {
+    Given("Single event within first window, but with not words")
     val emptyInput = Seq(Seq(""))
-    val expectedOutput = Seq(Seq(WordSummary(1)))
+    val expectedOutput = Seq(Seq(WordSummary.empty()))
     testOperation[String, WordSummary](emptyInput, summarizer.summarize _, expectedOutput, ordered = true)
   }
 
-  ignore should "count total number of words in all inputs seen so far" in {
-    Given("two windows")
+  it should "Maintain running aggregate summary across the windows - single element windows" in {
+    Given("two windows, each has one event")
     val emptyInput = Seq(Seq("hello Spark"), Seq("hello"))
-    val expectedOutput = Seq(Seq(WordSummary(2)), Seq(WordSummary(3)))
+    val expectedOutput = Seq(Seq(WordSummary(2, Set("hello", "Spark"))), Seq(WordSummary(3, Set("hello", "Spark"))))
     testOperation[String, WordSummary](emptyInput, summarizer.summarize _, expectedOutput, ordered = true)
   }
+
+  it should "Maintain running aggregate summary across the windows - multiple events per window" in {
+    Given("two windows, each has one event")
+    val emptyInput = Seq(Seq("hello", "Spark"), Seq("hello"))
+    val expectedOutput = Seq(Seq(WordSummary(2, Set("hello", "Spark"))), Seq(WordSummary(3, Set("hello", "Spark"))))
+    testOperation[String, WordSummary](emptyInput, summarizer.summarize _, expectedOutput, ordered = true)
+  }
+
 
 }
