@@ -23,7 +23,7 @@ object StreamingAppContext {
     "key.deserializer" -> classOf[StringDeserializer],
     "value.deserializer" -> classOf[StringDeserializer],
     "group.id" -> config.getString("kafka.consumerGroup"),
-    "auto.offset.reset" -> "earliest"
+    "auto.offset.reset" -> "latest"
   )
 
   val topics = Array(config.getString("kafka.topic"))
